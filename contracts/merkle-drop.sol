@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 pragma solidity >=0.8.0;
-
+import "hardhat/console.sol";
 /// ============ Imports ============
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol"; //  ERC20
@@ -123,6 +123,7 @@ contract MerkleDrop {
             _hash(to, amount, signCountNumber),
             signature
         );
+        console.log("signer is ", signer);
         // Throw if address has already claimed tokens
         if (!hasClaimed[signer]) revert NotClaimed();
 
@@ -152,9 +153,17 @@ contract MerkleDrop {
             );
     }
 
+    function getMessageHash(
+        address account,
+        uint256 amount,
+        uint256 _signCountNumber
+    ) public pure returns (bytes32) {
+        return keccak256(abi.encodePacked(account, amount, _signCountNumber));
+    }
+
     function _returnSigner(bytes32 digest, bytes memory signature)
         internal
-        view
+        pure
         returns (address)
     {
         return ECDSA.recover(digest, signature);

@@ -23,6 +23,12 @@ contract MerkleDropFactory {
 
     //----------------------------------------
 
+    /// ============ Events ============
+
+    /// @notice Emitted after a AirDropToken contract is created
+    /// @param instance address of the Airdrop contract
+    event AirdropCreated(address indexed instance);
+
     /// @notice Allows creating a new airdrop contract by anyone with the desired ERC20 token
     /// @param _name name of the airdrop token contract
     /// @param _token ERC20 token address to be used in the airdrop contract
@@ -36,10 +42,11 @@ contract MerkleDropFactory {
             _token != address(0),
             "zero address shouldn't be used as the airdrop token address"
         );
-        MerkleDrop newInstance = new MerkleDrop(_merkleRoot, _token);
+        address newInstance = address(new MerkleDrop(_merkleRoot, _token));
         addressToDropMapping[newInstance].name = _name;
         allDrops.push(newInstance);
         addressToDropMapping[newInstance].listPointer = allDrops.length - 1;
+        emit AirdropCreated(newInstance);
         return newInstance;
     }
 }
