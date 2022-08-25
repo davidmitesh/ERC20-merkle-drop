@@ -73,60 +73,37 @@ describe('ERC20AirDrop', function () {
         expect(await this.airDropContract.remainingTokens(userAddress)).to.equal(50);
       })
 
+
+
       it('checks if anyone with the valid signature can withdraw tokens',async function(){
         const currentSignCountNumber = await this.airDropContract.signCountNumber();
-        const messageDigest = await this.airDropContract.getMessageHash(this.accounts[2].address,50,currentSignCountNumber)
+        const messageDigest = await this.airDropContract.getMessageHash(this.accounts[2].address,20,currentSignCountNumber)
         // const signature = await this.accounts[0].signMessage(hashData(this.accounts[2].address,50,currentSignCountNumber));
         const signature = await this.accounts[0].signMessage(ethers.utils.arrayify(messageDigest))
+        this.signature = signature
         //checking the user 2 balance of the KIT token before the withdraw
         expect(await this.kitToken.balanceOf(this.accounts[2].address)).to.equal(0)
 
         
         //making the withdraw using signature
-        await expect(this.airDropContract.withdrawWithSignature(50,signature,this.accounts[2].address))
+        await expect(this.airDropContract.withdrawWithSignature(20,signature,this.accounts[2].address))
         .to.emit(this.airDropContract,'Withdraw')
-        .withArgs(this.accounts[2].address,50);
+        .withArgs(this.accounts[2].address,20);
 
          //checking the user 2 balance of the KIT token after the withdraw
-         expect(await this.kitToken.balanceOf(this.accounts[2].address)).to.equal(50)
+         expect(await this.kitToken.balanceOf(this.accounts[2].address)).to.equal(20)
+
         
+        
+      })
+
+      it("checks if the signature cannot be replayed",async function(){
+           //reverts because the same signature is trying to be used 
+         await expect(this.airDropContract.withdrawWithSignature(20,this.signature,this.accounts[2].address))
+         .reverted
       })
     
   });
 
-//   describe('Duplicate mint', function () {
-//     before(async function() {
-//       this.registry = await deploy('ERC721MerkleDrop', 'Name', 'Symbol', this.merkleTree.getHexRoot());
 
-//       this.token = {};
-//       [ this.token.tokenId, this.token.account ] = Object.entries(tokens).find(Boolean);
-//       this.token.proof = this.merkleTree.getHexProof(hashToken(this.token.tokenId, this.token.account));
-//     });
-
-//     it('mint once - success', async function () {
-//       await expect(this.registry.redeem(this.token.account, this.token.tokenId, this.token.proof))
-//         .to.emit(this.registry, 'Transfer')
-//         .withArgs(ethers.constants.AddressZero, this.token.account, this.token.tokenId);
-//     });
-
-//     it('mint twice - failure', async function () {
-//       await expect(this.registry.redeem(this.token.account, this.token.tokenId, this.token.proof))
-//         .to.be.revertedWith('ERC721: token already minted');
-//     });
-//   });
-
-//   describe('Frontrun', function () {
-//     before(async function() {
-//       this.registry = await deploy('ERC721MerkleDrop', 'Name', 'Symbol', this.merkleTree.getHexRoot());
-
-//       this.token = {};
-//       [ this.token.tokenId, this.token.account ] = Object.entries(tokens).find(Boolean);
-//       this.token.proof = this.merkleTree.getHexProof(hashToken(this.token.tokenId, this.token.account));
-//     });
-
-//     it('prevented', async function () {
-//       await expect(this.registry.redeem(this.accounts[0].address, this.token.tokenId, this.token.proof))
-//         .to.be.revertedWith('Invalid merkle proof');
-//     });
-//   });
 });
