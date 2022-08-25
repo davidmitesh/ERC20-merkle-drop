@@ -142,6 +142,20 @@ contract MerkleDrop {
         emit Withdraw(to, amount);
     }
 
+    /// @notice Returns the message hash or digest for the signature construction
+    /// @param account to which tokens should be given to
+    /// @param amount of tokens to be given
+    /// @param _signCountNumber to make the signature unique and prevent replay attack
+    function getMessageHash(
+        address account,
+        uint256 amount,
+        uint256 _signCountNumber
+    ) public pure returns (bytes32) {
+        return keccak256(abi.encodePacked(account, amount, _signCountNumber));
+    }
+
+    /// ============ Internal Functions ============
+
     function _hash(
         address account,
         uint256 amount,
@@ -151,14 +165,6 @@ contract MerkleDrop {
             ECDSA.toEthSignedMessageHash(
                 keccak256(abi.encodePacked(account, amount, _signCountNumber))
             );
-    }
-
-    function getMessageHash(
-        address account,
-        uint256 amount,
-        uint256 _signCountNumber
-    ) public pure returns (bytes32) {
-        return keccak256(abi.encodePacked(account, amount, _signCountNumber));
     }
 
     function _returnSigner(bytes32 digest, bytes memory signature)
