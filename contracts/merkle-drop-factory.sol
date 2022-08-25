@@ -4,7 +4,7 @@ import "./merkle-drop.sol";
 
 /// @title MerkleDropFactory
 /// @notice A factory contract to deploy ERC20 token airdrop claimable by members of a merkle tree
-/// @author Mitesh Pandey <contact@davidmitesh@gmail.com>
+/// @author Mitesh Pandey <contact@ david.mitesh@gmail.com>
 contract MerkleDropFactory {
     /// @notice this pattern is implemented in order to make the CRUD operations(if implemented) more efficient
     //---------------------------------

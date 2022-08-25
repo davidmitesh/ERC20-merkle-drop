@@ -9,7 +9,7 @@ import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol"; //for verifying s
 
 /// @title MerkleDrop
 /// @notice ERC20 tokens claimable by members of a merkle tree
-/// @author Mitesh Pandey <contact@davidmitesh@gmail.com>
+/// @author Mitesh Pandey <contact@ david.mitesh@gmail.com>
 contract MerkleDrop {
     /// ============ Immutable storage ============
     /// @notice ERC20 token address that will be airdropped through this contract instance
